@@ -206,7 +206,6 @@ while not done:
     text = font.render("Score: " + str(game.score), True, BLACK)
     text_game_over = font1.render("Game Over", True, (255, 125, 0))
     text_game_over1 = font1.render("Press ESC", True, (255, 215, 0))
-
     screen.blit(text, [0, 0])
     if game.state == "gameover":
         screen.blit(text_game_over, [20, 200])
