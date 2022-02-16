@@ -1,6 +1,8 @@
+
+import numpy as np
 import pygame
 import random
-
+    
 colors = [
     (0, 0, 0),
     (120, 37, 179),
@@ -11,6 +13,31 @@ colors = [
     (180, 34, 122),
 ]
 
+rows, cols = img.pygame.PixelArray.shape
+
+visual_board = np.zeros((rows,cols,3), dtype=np.uint8)
+board_array = np.zeros((20,10))
+
+board_color = np.array([35,35,36])
+board_mask = cv2.inRange(img, board_color, board_color)
+contours, _ =  cv2.findContours(board_mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+contours = sorted(contours, key=lambda x: cv2.contourArea(x), reverse=True)
+
+cnt = contours[0]
+(board_x, board_y, board_w, board_h) = cv2.boundingRect(cnt)
+cv2.drawContours(img, [cnt], -1, (0, 225, 0), 3)
+
+block_width = int(board_x / 10)
+block_height = int(board_h / 20)
+
+for n in range(20):
+    for n2 in range(10):
+        block_x = block_width * n2
+        block_y = block_height * n 
+
+        cv2.rectangle(virtual_board, (board_x + block_x, board_y + block_y),
+                        (board_x + block_x + block_width, board_y +block_y + block_height),
+                        (255, 255, 255), 1)
 
 class Figure:
     x = 0
@@ -25,11 +52,12 @@ class Figure:
         [[1, 4, 5, 6], [1, 4, 5, 9], [4, 5, 6, 9], [1, 5, 6, 9]],
         [[1, 2, 5, 6]],
     ]
-
     def __init__(self, x, y):
         self.x = x
         self.y = y
         self.type = random.randint(0, len(self.figures) - 1)
+        self.color = random.randint(1, len(colors) - 1)
+        self.rotation = 0
         self.color = random.randint(1, len(colors) - 1)
         self.rotation = 0
 
